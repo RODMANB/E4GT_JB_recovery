@@ -215,8 +215,8 @@ void setup_data_media() {
         Volume* vol = device_volumes + i;
         if (strcmp(vol->fs_type, "datamedia") == 0) {
             rmdir(vol->mount_point);
-            mkdir("/data/media", 0755);
-            symlink("/data/media", vol->mount_point);
+            mkdir("/data/media/0", 0755);
+            symlink("/data/media/0", vol->mount_point);
             return;
         }
     }
@@ -238,7 +238,7 @@ int ensure_path_mounted_at_mount_point(const char* path, const char* mount_point
         return -1;
     }
     if (is_data_media_volume_path(path)) {
-        LOGI("using /data/media for %s.\n", path);
+        LOGI("using /data/media/0 for %s.\n", path);
         int ret;
         if (0 != (ret = ensure_path_mounted("/data")))
             return ret;
@@ -305,7 +305,7 @@ int ensure_path_mounted_at_mount_point(const char* path, const char* mount_point
 }
 
 int ensure_path_unmounted(const char* path) {
-    // if we are using /data/media, do not ever unmount volumes /data or /sdcard
+    // if we are using /data/media/0, do not ever unmount volumes /data or /sdcard
     if (strstr(path, "/data") == path && is_data_media()) {
         return 0;
     }
@@ -355,7 +355,7 @@ int format_volume(const char* volume) {
     if (is_data_media_volume_path(volume)) {
         return format_unknown_device(NULL, volume, NULL);
     }
-    // check to see if /data is being formatted, and if it is /data/media
+    // check to see if /data is being formatted, and if it is /data/media/0
     // Note: the /sdcard check is redundant probably, just being safe.
     if (strstr(volume, "/data") == volume && is_data_media() && !handle_data_media) {
         return format_unknown_device(NULL, volume, NULL);

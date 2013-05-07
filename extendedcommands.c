@@ -766,10 +766,10 @@ int format_unknown_device(const char *device, const char* path, const char *fs_t
     if (strcmp(path, "/data") == 0) {
         sprintf(tmp, "cd /data ; for f in $(ls -a | grep -v ^media$); do rm -rf $f; done");
         __system(tmp);
-        // if the /data/media sdcard has already been migrated for android 4.2,
+        // if the /data/media/0 sdcard has already been migrated for android 4.2,
         // prevent the migration from happening again by writing the .layout_version
         struct stat st;
-        if (0 == lstat("/data/media", &st)) {
+        if (0 == lstat("/data/media/0", &st)) {
             char* layout_version = "2";
             FILE* f = fopen("/data/.layout_version", "wb");
             if (NULL != f) {
@@ -781,7 +781,7 @@ int format_unknown_device(const char *device, const char* path, const char *fs_t
             }
         }
         else {
-            LOGI("/data/media not found. migration may occur.\n");
+            LOGI("/data/media/0 not found. migration may occur.\n");
         }
     }
     else {
@@ -906,7 +906,7 @@ void show_partition_menu()
           options[mountable_volumes + formatable_volumes + 1] = NULL;
         }
         else {
-          options[mountable_volumes + formatable_volumes] = "format /data and /data/media (/sdcard)";
+          options[mountable_volumes + formatable_volumes] = "format /data and /data/media/0 (/sdcard)";
           options[mountable_volumes + formatable_volumes + 1] = NULL;
         }
 
@@ -918,7 +918,7 @@ void show_partition_menu()
                 show_mount_usb_storage_menu();
             }
             else {
-                if (!confirm_selection("format /data and /data/media (/sdcard)", confirm))
+                if (!confirm_selection("format /data and /data/media/0 (/sdcard)", confirm))
                     continue;
                 handle_data_media_format(1);
                 ui_print("Formatting /data...\n");

@@ -92,7 +92,7 @@ static void nandroid_callback(const char* filename)
 static void compute_directory_stats(const char* directory)
 {
     char tmp[PATH_MAX];
-    sprintf(tmp, "find %s | %s wc -l > /tmp/dircount", directory, strcmp(directory, "/data") == 0 && is_data_media() ? "grep -v /data/media |" : "");
+    sprintf(tmp, "find %s | %s wc -l > /tmp/dircount", directory, strcmp(directory, "/data") == 0 && is_data_media() ? "grep -v /data/media/0 |" : "");
     __system(tmp);
     char count_text[100];
     FILE* f = fopen("/tmp/dircount", "r");
@@ -583,7 +583,7 @@ int nandroid_restore_partition_extended(const char* backup_path, const char* mou
         // reformat the /system or /data partitions, and not boot due to
         // a locked bootloader.
         // Other devices, like the Galaxy Nexus, XOOM, and Galaxy Tab 10.1
-        // have a /sdcard symlinked to /data/media.
+        // have a /sdcard symlinked to /data/media/0.
         // Or of volume does not exist (.android_secure), just rm -rf.
         if (vol == NULL || 0 == strcmp(vol->fs_type, "auto"))
             backup_filesystem = NULL;
